@@ -30,12 +30,23 @@ select {
 .container {
     width: 100%;
     margin: 0 auto;
-    padding: 0 72px;
+    padding: 0 30px;
     max-width: 1280px;
 }
 
 .row {
     display: grid;
     gap: 15px;
-    grid-template-columns: 1fr 1fr;
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding: 0 72px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .row {
+        grid-template-columns: 1fr 1fr;
+    }
 }

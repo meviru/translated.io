@@ -1,7 +1,7 @@
 .mainContent {
     position: relative;
     z-index: 12;
-    padding-top: 92px;
+    padding: 92px 0;
 }
 
 .appContainer {
@@ -52,13 +52,13 @@
 }
 
 .iconBtn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     outline: none;
     display: flex;
     cursor: pointer;
     align-items: center;
-    border-radius: 10px;
+    border-radius: 12px;
     justify-content: center;
     border: 2px solid #4D5562;
     background-color: transparent;
@@ -76,11 +76,36 @@
     height: 125px;
     color: #fff;
     outline: none;
-    font-weight: bold;
+    font-weight: 500;
     background-color: transparent;
 }
 
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background-color: #394150;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #4D5562;
+    border-radius: 5px;
+}
+
+
+.cardFooter {
+    position: relative;
+    padding-top: 16px;
+}
+
 .footerCount {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    right: 0;
     font-size: 12px;
     font-weight: 500;
     color: #6B727E;
@@ -89,8 +114,8 @@
 
 .footerButtons {
     display: flex;
-    margin-top: 12px;
-    min-height: 50px;
+    min-height: 62px;
+    padding-top: 12px;
     align-items: flex-end;
     justify-content: space-between;
 }
@@ -106,12 +131,12 @@
     outline: none;
     color: #fff;
     display: flex;
-    font-weight: 600;
+    font-weight: 500;
     padding: 12px 24px;
     border-radius: 12px;
     align-items: center;
-    border: 1px solid #7DA9F4;
-    background-color: #3762E4;
+    border: 1px solid #7CA9F3;
+    background-color: #3662E3;
 }
 
 .translateBtnIcon {
