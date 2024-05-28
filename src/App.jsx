@@ -7,6 +7,7 @@ import iconCopy from "./assets/Copy.svg"
 import iconTranslate from "./assets/Sort_alfa.svg"
 import { useState, useEffect, useRef } from 'react'
 import { useDebounce } from 'use-debounce';
+import { Slide, ToastContainer, toast } from 'react-toastify'
 
 const API_URL = "https://api.mymemory.translated.net";
 
@@ -27,11 +28,13 @@ function App() {
   const [language, setLanguage] = useState("en");
   const selectLanguage = (lang) => {
     setLanguage(lang);
+    onTranslate(lang, languageTo);
   }
 
-  const [languageTo, setLanguageTo] = useState("es");
-  const selectLanguageTo = (lang) => {
-    setLanguageTo(lang);
+  const [languageTo, setLanguageTo] = useState("fr");
+  const selectLanguageTo = (langTo) => {
+    setLanguageTo(langTo);
+    onTranslate(language, langTo);
   }
 
   useEffect(() => {
@@ -39,18 +42,40 @@ function App() {
   }, [translate])
 
   useEffect(() => {
-    fetch(`${API_URL}/get?q=${translateValue}&langpair=${language}|${languageTo}`)
+    onTranslate(language, languageTo);
+  }, [translateValue])
+
+  const onTranslate = (lang, langTo) => {
+    fetch(`${API_URL}/get?q=${translateValue}&langpair=${lang}|${langTo}`)
       .then(response => response.json())
       .then(data => {
-        setTranslated(data.responseData.translatedText);
+        switch (data.responseStatus) {
+          case "403":
+            toast.error(data.responseDetails, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: false,
+              progress: undefined,
+              theme: "colored",
+              transition: Slide,
+            });
+            break;
+          case 200:
+            setTranslated(data.responseData.translatedText);
+            break;
+        }
       })
       .catch(error => {
         console.log(error)
       })
-  }, [translateValue])
+  }
 
   return (
     <>
+      <ToastContainer />
       <Hero />
       <main className={styles.mainContent}>
         <div className="container">

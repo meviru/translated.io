@@ -39,6 +39,17 @@ select {
     gap: 15px;
 }
 
+.Toastify__toast-container {
+    width: 375px;
+    max-width: 100%;
+}
+
+.Toastify__toast {
+    font-family: "DM Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+}
+
 @media (min-width: 768px) {
     .container {
         padding: 0 72px;
