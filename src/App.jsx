@@ -62,15 +62,13 @@ function App() {
         switch (data.responseStatus) {
           case "403":
             toast.error(data.responseDetails, {
-              position: "bottom-center",
               autoClose: 5000,
-              hideProgressBar: false,
+              hideProgressBar: true,
               closeOnClick: true,
               pauseOnHover: true,
               draggable: false,
               progress: undefined,
               theme: "colored",
-              transition: Slide,
             });
             break;
           case 200:
@@ -81,6 +79,19 @@ function App() {
       .catch(error => {
         console.log(error)
       })
+  }
+
+  const onCopy = (value) => {
+    navigator.clipboard.writeText(value);
+    toast.info("Copied to clipboard", {
+      autoClose: 1500,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+      theme: "colored",
+    });
   }
 
   return (
@@ -111,7 +122,7 @@ function App() {
                       <button type='button' className={styles.iconBtn}>
                         <img src={iconSpeaker} alt='speaker' title='Listen' />
                       </button>
-                      <button type='button' className={styles.iconBtn} onClick={() => navigator.clipboard.writeText(translate)}>
+                      <button type='button' className={styles.iconBtn} onClick={() => onCopy(translate)}>
                         <img src={iconCopy} alt='copy' title='Copy' />
                       </button>
                     </div>
@@ -144,7 +155,7 @@ function App() {
                       <button type='button' className={styles.iconBtn}>
                         <img src={iconSpeaker} alt='speaker' title='Listen' />
                       </button>
-                      <button type='button' className={styles.iconBtn} onClick={() => navigator.clipboard.writeText(translated)}>
+                      <button type='button' className={styles.iconBtn} onClick={() => onCopy(translated)}>
                         <img src={iconCopy} alt='copy' title='Copy' />
                       </button>
                     </div>

@@ -62,6 +62,19 @@
     justify-content: center;
     border: 2px solid #4D5562;
     background-color: transparent;
+    transition: 0.35s ease;
+}
+
+.iconBtn img {
+    transition: 0.35s ease;
+}
+
+.iconBtn:hover {
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.iconBtn:hover img {
+    filter: brightness(0) invert(0.7);
 }
 
 .cardBody {
@@ -137,6 +150,12 @@
     align-items: center;
     border: 1px solid #7CA9F3;
     background-color: #3662E3;
+    transition: 0.35s ease;
+}
+
+.translateBtn:hover {
+    border-color: #2962be;
+    background-color: #163eb8;
 }
 
 .translateBtnIcon {
