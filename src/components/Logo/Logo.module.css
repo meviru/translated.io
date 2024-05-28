@@ -1,0 +1,12 @@
+.logo {
+    display: flex;
+    justify-content: center;
+}
+
+.logoLink {
+    display: block;
+}
+
+.logoImg {
+    display: block;
+}
