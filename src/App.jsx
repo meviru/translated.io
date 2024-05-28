@@ -13,7 +13,7 @@ const API_URL = "https://api.mymemory.translated.net";
 
 function App() {
   const [translate, setTranslate] = useState("Hello, how are you?");
-  const [translateValue] = useDebounce(translate, 500);
+  const [translateValue] = useDebounce(translate, 400);
   const [translated, setTranslated] = useState("");
 
   const count = useRef(0);
@@ -22,7 +22,13 @@ function App() {
     AUTO: 'autodetect',
     ENGLISH: 'en',
     FRENCH: 'fr',
-    SPANISH: 'es'
+    SPANISH: 'es',
+    HINDI: "hi",
+    CHINESE: "zh-CN",
+    JAPANESE: "ja",
+    GERMAN: "de-DE",
+    ARABIC: "ar-AE",
+    CZECH: "cs",
   }
 
   const [language, setLanguage] = useState("en");
@@ -42,7 +48,11 @@ function App() {
   }, [translate])
 
   useEffect(() => {
-    onTranslate(language, languageTo);
+    if (translateValue.length > 0) {
+      onTranslate(language, languageTo);
+    } else {
+      setTranslated("");
+    }
   }, [translateValue])
 
   const onTranslate = (lang, langTo) => {
@@ -99,9 +109,9 @@ function App() {
                   <div className={styles.footerButtons}>
                     <div className={styles.footerButtonsLeft}>
                       <button type='button' className={styles.iconBtn}>
-                        <img src={iconSpeaker} alt='speaker' title='Speaker' />
+                        <img src={iconSpeaker} alt='speaker' title='Listen' />
                       </button>
-                      <button type='button' className={styles.iconBtn}>
+                      <button type='button' className={styles.iconBtn} onClick={() => navigator.clipboard.writeText(translate)}>
                         <img src={iconCopy} alt='copy' title='Copy' />
                       </button>
                     </div>
@@ -132,9 +142,9 @@ function App() {
                   <div className={styles.footerButtons}>
                     <div className={styles.footerButtonsLeft}>
                       <button type='button' className={styles.iconBtn}>
-                        <img src={iconSpeaker} alt='speaker' title='Speaker' />
+                        <img src={iconSpeaker} alt='speaker' title='Listen' />
                       </button>
-                      <button type='button' className={styles.iconBtn}>
+                      <button type='button' className={styles.iconBtn} onClick={() => navigator.clipboard.writeText(translated)}>
                         <img src={iconCopy} alt='copy' title='Copy' />
                       </button>
                     </div>
