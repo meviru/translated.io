@@ -7,9 +7,32 @@ import iconCopy from "./assets/Copy.svg"
 import iconTranslate from "./assets/Sort_alfa.svg"
 import { useState, useEffect, useRef } from 'react'
 import { useDebounce } from 'use-debounce';
-import { Slide, ToastContainer, toast } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 
 const API_URL = "https://api.mymemory.translated.net";
+const KEY = "826c0eb92b45420b701c";
+
+const TOASTCONFIG = {
+  hideProgressBar: true,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: false,
+  progress: undefined,
+  theme: "colored",
+}
+
+const LANGUAGES = {
+  AUTO: 'autodetect',
+  ENGLISH: 'en',
+  FRENCH: 'fr',
+  SPANISH: 'es',
+  HINDI: "hi",
+  CHINESE: "zh-CN",
+  JAPANESE: "ja",
+  GERMAN: "de-DE",
+  ARABIC: "ar-AE",
+  CZECH: "cs",
+}
 
 function App() {
   const [translate, setTranslate] = useState("Hello, how are you?");
@@ -17,19 +40,6 @@ function App() {
   const [translated, setTranslated] = useState("");
 
   const count = useRef(0);
-
-  const LANGUAGES = {
-    AUTO: 'autodetect',
-    ENGLISH: 'en',
-    FRENCH: 'fr',
-    SPANISH: 'es',
-    HINDI: "hi",
-    CHINESE: "zh-CN",
-    JAPANESE: "ja",
-    GERMAN: "de-DE",
-    ARABIC: "ar-AE",
-    CZECH: "cs",
-  }
 
   const [language, setLanguage] = useState("en");
   const selectLanguage = (lang) => {
@@ -41,6 +51,12 @@ function App() {
   const selectLanguageTo = (langTo) => {
     setLanguageTo(langTo);
     onTranslate(language, langTo);
+  }
+
+  const switchTranslation = () => {
+    setTranslate(translated);
+    setLanguage(languageTo);
+    setLanguageTo(language);
   }
 
   useEffect(() => {
@@ -56,19 +72,20 @@ function App() {
   }, [translateValue])
 
   const onTranslate = (lang, langTo) => {
-    fetch(`${API_URL}/get?q=${translateValue}&langpair=${lang}|${langTo}`)
+    fetch(`${API_URL}/get?q=${translateValue}&langpair=${lang}|${langTo}&key=${KEY}`)
       .then(response => response.json())
       .then(data => {
         switch (data.responseStatus) {
           case "403":
             toast.error(data.responseDetails, {
               autoClose: 5000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: false,
-              progress: undefined,
-              theme: "colored",
+              ...TOASTCONFIG
+            });
+            break;
+          case 429:
+            toast.error(data.responseDetails, {
+              autoClose: 5000,
+              ...TOASTCONFIG
             });
             break;
           case 200:
@@ -85,12 +102,7 @@ function App() {
     navigator.clipboard.writeText(value);
     toast.info("Copied to clipboard", {
       autoClose: 1500,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      theme: "colored",
+      ...TOASTCONFIG
     });
   }
 
@@ -127,7 +139,7 @@ function App() {
                       </button>
                     </div>
                     <button type='button' className={styles.translateBtn}>
-                      <img className={styles.translateBtnIcon} src={iconTranslate} alt='copy' title='Copy' />
+                      <img className={styles.translateBtnIcon} src={iconTranslate} alt='copy' title='Copy text' />
                       Translate
                     </button>
                   </div>
@@ -141,7 +153,7 @@ function App() {
                     <li onClick={() => selectLanguageTo('es')} className={`${styles.langSwitchItem} ${languageTo === LANGUAGES.SPANISH ? styles.active : ''}`}> Spanish</li>
                   </ul>
                   <div className={styles.cardHeaderRight}>
-                    <button type='button' className={styles.iconBtn}>
+                    <button type='button' className={styles.iconBtn} onClick={switchTranslation}>
                       <img src={iconSwitch} alt='switch' title='Switch' />
                     </button>
                   </div>
@@ -156,7 +168,7 @@ function App() {
                         <img src={iconSpeaker} alt='speaker' title='Listen' />
                       </button>
                       <button type='button' className={styles.iconBtn} onClick={() => onCopy(translated)}>
-                        <img src={iconCopy} alt='copy' title='Copy' />
+                        <img src={iconCopy} alt='copy' title='Copy text' />
                       </button>
                     </div>
                   </div>

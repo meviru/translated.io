@@ -161,3 +161,7 @@
 .translateBtnIcon {
     margin-right: 7px;
 }
+
+.disabled {
+    pointer-events: none;
+}
