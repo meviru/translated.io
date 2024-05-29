@@ -10,9 +10,11 @@ import { useDebounce } from 'use-debounce';
 import { ToastContainer, toast } from 'react-toastify'
 
 const API_URL = "https://api.mymemory.translated.net";
-const KEY = "826c0eb92b45420b701c";
 
-const TOASTCONFIG = {
+const XI_API_KEY = "c40f81375afb77dd3e6157e80c363482";
+const VOICE_ID = "P7x743VjyZEOihNNygQ9";
+
+const TOAST_CONFIG = {
   hideProgressBar: true,
   closeOnClick: true,
   pauseOnHover: true,
@@ -72,30 +74,32 @@ function App() {
   }, [translateValue])
 
   const onTranslate = (lang, langTo) => {
-    fetch(`${API_URL}/get?q=${translateValue}&langpair=${lang}|${langTo}&key=${KEY}`)
-      .then(response => response.json())
-      .then(data => {
-        switch (data.responseStatus) {
-          case "403":
-            toast.error(data.responseDetails, {
-              autoClose: 5000,
-              ...TOASTCONFIG
-            });
-            break;
-          case 429:
-            toast.error(data.responseDetails, {
-              autoClose: 5000,
-              ...TOASTCONFIG
-            });
-            break;
-          case 200:
-            setTranslated(data.responseData.translatedText);
-            break;
-        }
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    if (translateValue.length > 0) {
+      fetch(`${API_URL}/get?q=${translateValue}&langpair=${lang}|${langTo}`)
+        .then(response => response.json())
+        .then(data => {
+          switch (data.responseStatus) {
+            case "403":
+              toast.error(data.responseDetails, {
+                autoClose: 5000,
+                ...TOAST_CONFIG
+              });
+              break;
+            case 429:
+              toast.error(data.responseDetails, {
+                autoClose: 5000,
+                ...TOAST_CONFIG
+              });
+              break;
+            case 200:
+              setTranslated(data.responseData.translatedText);
+              break;
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
   }
 
   const onCopy = (value) => {
@@ -104,6 +108,31 @@ function App() {
       autoClose: 1500,
       ...TOASTCONFIG
     });
+  }
+
+  const onListen = (text) => {
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'xi-api-key': XI_API_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: `{"text":"${text}","voice_settings":{"stability":0.5,"similarity_boost":0.5}}`,
+    };
+
+    fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, options, { parseType: 'arrayBuffer' })
+      .then(response => {
+        response.blob().then((audioBlob) => {
+          // Convert the binary data to a blob
+          const audioUrl = URL.createObjectURL(audioBlob);
+
+          // Create an audio element and set its source to the audio URL
+          const audio = new Audio(audioUrl);
+          audio.play(); // Play the audio
+        })
+      })
+      .catch(error => console.error(error));
   }
 
   return (
@@ -132,7 +161,7 @@ function App() {
                   <div className={styles.footerButtons}>
                     <div className={styles.footerButtonsLeft}>
                       <button type='button' className={styles.iconBtn}>
-                        <img src={iconSpeaker} alt='speaker' title='Listen' />
+                        <img src={iconSpeaker} alt='speaker' title='Listen' onClick={() => onListen(translate)} />
                       </button>
                       <button type='button' className={styles.iconBtn} onClick={() => onCopy(translate)}>
                         <img src={iconCopy} alt='copy' title='Copy' />
@@ -164,7 +193,7 @@ function App() {
                 <div className={styles.cardFooter}>
                   <div className={styles.footerButtons}>
                     <div className={styles.footerButtonsLeft}>
-                      <button type='button' className={styles.iconBtn}>
+                      <button type='button' className={styles.iconBtn} onClick={() => onListen(translated)}>
                         <img src={iconSpeaker} alt='speaker' title='Listen' />
                       </button>
                       <button type='button' className={styles.iconBtn} onClick={() => onCopy(translated)}>
