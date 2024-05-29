@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify'
 
 const API_URL = "https://api.mymemory.translated.net";
 
+const XI_API_URL = "https://api.elevenlabs.io/v1/text-to-speech";
 const XI_API_KEY = "c40f81375afb77dd3e6157e80c363482";
 const VOICE_ID = "P7x743VjyZEOihNNygQ9";
 
@@ -102,37 +103,52 @@ function App() {
     }
   }
 
+  const onTranslateBtn = () => {
+    onTranslate(language, languageTo);
+  }
+
   const onCopy = (value) => {
     navigator.clipboard.writeText(value);
     toast.info("Copied to clipboard", {
       autoClose: 1500,
-      ...TOASTCONFIG
+      ...TOAST_CONFIG
     });
   }
 
+  const [isPlaying, setIsPlaying] = useState(false);
   const onListen = (text) => {
+    if (text.length > 0) {
+      setIsPlaying(true);
+      const options = {
+        method: 'POST',
+        headers: {
+          'xi-api-key': XI_API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: `{"text":"${text}","voice_settings":{"stability":0.5,"similarity_boost":0.5}}`,
+      };
 
-    const options = {
-      method: 'POST',
-      headers: {
-        'xi-api-key': XI_API_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: `{"text":"${text}","voice_settings":{"stability":0.5,"similarity_boost":0.5}}`,
-    };
+      fetch(`${XI_API_URL}/${VOICE_ID}`, options, { parseType: 'arrayBuffer' })
+        .then(response => {
+          response && response.blob().then((audioBlob) => {
+            // Convert the binary data to a blob
+            const audioUrl = URL.createObjectURL(audioBlob);
 
-    fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, options, { parseType: 'arrayBuffer' })
-      .then(response => {
-        response.blob().then((audioBlob) => {
-          // Convert the binary data to a blob
-          const audioUrl = URL.createObjectURL(audioBlob);
+            // Create an audio element and set its source to the audio URL
+            const audio = new Audio(audioUrl);
+            audio.play(); // Play the audio
 
-          // Create an audio element and set its source to the audio URL
-          const audio = new Audio(audioUrl);
-          audio.play(); // Play the audio
+            audio.addEventListener('loadedmetadata', () => {
+              // do stuff with the duration
+              const duration = (audio.duration * 1000) + 200;
+              setTimeout(() => {
+                setIsPlaying(false);
+              }, duration);
+            });
+          })
         })
-      })
-      .catch(error => console.error(error));
+        .catch(error => console.error(error));
+    }
   }
 
   return (
@@ -147,10 +163,10 @@ function App() {
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
                   <ul className={styles.langSwitch}>
-                    <li onClick={() => selectLanguage('autodetect')} className={`${styles.langSwitchItem} ${language === LANGUAGES.AUTO ? styles.active : ''}`}>Delete Language</li>
+                    <li onClick={() => selectLanguage('autodetect')} className={`${styles.langSwitchItem} ${language === LANGUAGES.AUTO ? styles.active : ''}`}>Detect Language</li>
                     <li onClick={() => selectLanguage('en')} className={`${styles.langSwitchItem} ${language === LANGUAGES.ENGLISH ? styles.active : ''}`}>English</li>
                     <li onClick={() => selectLanguage('fr')} className={`${styles.langSwitchItem} ${language === LANGUAGES.FRENCH ? styles.active : ''}`}>French</li>
-                    <li onClick={() => selectLanguage('es')} className={`${styles.langSwitchItem} ${language === LANGUAGES.SPANISH ? styles.active : ''}`}>Spanish</li>
+                    <li onClick={() => selectLanguage('es')} className={`${styles.selectLang} ${styles.langSwitchItem} ${language === LANGUAGES.SPANISH ? styles.active : ''}`}>Spanish</li>
                   </ul>
                 </div>
                 <div className={styles.cardBody}>
@@ -160,14 +176,14 @@ function App() {
                   <div className={styles.footerCount}>{count.current}/500</div>
                   <div className={styles.footerButtons}>
                     <div className={styles.footerButtonsLeft}>
-                      <button type='button' className={styles.iconBtn}>
-                        <img src={iconSpeaker} alt='speaker' title='Listen' onClick={() => onListen(translate)} />
+                      <button type='button' className={`${styles.iconBtn} ${isPlaying ? styles.iconBtnAnimation : ''}`} onClick={() => onListen(translate)}>
+                        <img src={iconSpeaker} alt='speaker' title='Listen' />
                       </button>
                       <button type='button' className={styles.iconBtn} onClick={() => onCopy(translate)}>
-                        <img src={iconCopy} alt='copy' title='Copy' />
+                        <img src={iconCopy} alt='copy' title='Copy text' />
                       </button>
                     </div>
-                    <button type='button' className={styles.translateBtn}>
+                    <button onClick={onTranslateBtn} type='button' className={styles.translateBtn}>
                       <img className={styles.translateBtnIcon} src={iconTranslate} alt='copy' title='Copy text' />
                       Translate
                     </button>
@@ -179,11 +195,11 @@ function App() {
                   <ul className={styles.langSwitch}>
                     <li onClick={() => selectLanguageTo('en')} className={`${styles.langSwitchItem} ${languageTo === LANGUAGES.ENGLISH ? styles.active : ''}`}>English</li>
                     <li onClick={() => selectLanguageTo('fr')} className={`${styles.langSwitchItem} ${languageTo === LANGUAGES.FRENCH ? styles.active : ''}`}>French</li>
-                    <li onClick={() => selectLanguageTo('es')} className={`${styles.langSwitchItem} ${languageTo === LANGUAGES.SPANISH ? styles.active : ''}`}> Spanish</li>
+                    <li onClick={() => selectLanguageTo('es')} className={`${styles.selectLang} ${styles.langSwitchItem} ${languageTo === LANGUAGES.SPANISH ? styles.active : ''}`}> Spanish</li>
                   </ul>
                   <div className={styles.cardHeaderRight}>
                     <button type='button' className={styles.iconBtn} onClick={switchTranslation}>
-                      <img src={iconSwitch} alt='switch' title='Switch' />
+                      <img src={iconSwitch} alt='switch' title='Switch translation' />
                     </button>
                   </div>
                 </div>
@@ -193,7 +209,7 @@ function App() {
                 <div className={styles.cardFooter}>
                   <div className={styles.footerButtons}>
                     <div className={styles.footerButtonsLeft}>
-                      <button type='button' className={styles.iconBtn} onClick={() => onListen(translated)}>
+                      <button type='button' className={`${styles.iconBtn} ${isPlaying ? styles.iconBtnAnimation : ''}`} onClick={() => onListen(translated)}>
                         <img src={iconSpeaker} alt='speaker' title='Listen' />
                       </button>
                       <button type='button' className={styles.iconBtn} onClick={() => onCopy(translated)}>

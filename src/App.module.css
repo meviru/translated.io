@@ -35,11 +35,23 @@
 }
 
 .langSwitchItem {
+    position: relative;
     padding: 10px;
     color: #6B727E;
     cursor: pointer;
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
     border-radius: 10px;
+}
+
+.selectLang::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    display: block;
+    margin-left: 3px;
+    background: url("./assets/Expand_down.svg") no-repeat center center/contain;
 }
 
 .langSwitchItem+.langSwitchItem {
@@ -69,12 +81,14 @@
     transition: 0.35s ease;
 }
 
-.iconBtn:hover {
-    border-color: rgba(255, 255, 255, 0.7);
+.iconBtn:hover,
+.iconBtn.iconBtnAnimation {
+    border-color: rgba(255, 255, 255, 0.8);
 }
 
-.iconBtn:hover img {
-    filter: brightness(0) invert(0.7);
+.iconBtn:hover img,
+.iconBtn.iconBtnAnimation {
+    filter: brightness(0) invert(0.8);
 }
 
 .cardBody {
@@ -90,6 +104,7 @@
     color: #fff;
     outline: none;
     font-weight: 500;
+    padding-right: 10px;
     background-color: transparent;
 }
 
