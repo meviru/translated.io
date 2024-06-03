@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useDebounce } from 'use-debounce';
+import { useState } from 'react'
 import styles from "./Card.module.css";
 import CardHeader from "../CardHeader/CardHeader"
 import CardBody from '../CardBody/CardBody';
@@ -15,58 +14,7 @@ const TOAST_CONFIG = {
     theme: "colored",
 }
 
-const Card = ({ text, setText, isTranslated, selectedLang, selectLanguage }) => {
-    // Hello, how are you?
-    const [translate, setTranslate] = useState("");
-    const [translateValue] = useDebounce(translate, 400);
-    const [translated, setTranslated] = useState("");
-
-    const switchTranslation = () => {
-        setTranslate(translated);
-        setLanguage(languageTo);
-        setLanguageTo(language);
-    }
-
-    useEffect(() => {
-        if (translateValue.length > 0) {
-            onTranslate(language, languageTo);
-        } else {
-            setTranslated("");
-        }
-    }, [translateValue])
-
-    const onTranslate = (lang, langTo) => {
-        if (translateValue.length > 0) {
-            fetch(`${API_URL}/get?q=${translateValue}&langpair=${lang}|${langTo}`)
-                .then(response => response.json())
-                .then(data => {
-                    switch (data.responseStatus) {
-                        case "403":
-                            toast.error(data.responseDetails, {
-                                autoClose: 5000,
-                                ...TOAST_CONFIG
-                            });
-                            break;
-                        case 429:
-                            toast.error(data.responseDetails, {
-                                autoClose: 5000,
-                                ...TOAST_CONFIG
-                            });
-                            break;
-                        case 200:
-                            setTranslated(data.responseData.translatedText);
-                            break;
-                    }
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        }
-    }
-
-    const onTranslateBtn = () => {
-        onTranslate(language, languageTo);
-    }
+const Card = ({ text, setText, language, isTranslated, selectLanguage, switchTranslation, onTranslateButtonClick }) => {
 
     const onCopy = (value) => {
         navigator.clipboard.writeText(value);
@@ -76,46 +24,11 @@ const Card = ({ text, setText, isTranslated, selectedLang, selectLanguage }) => 
         });
     }
 
-    const [isPlaying, setIsPlaying] = useState(false);
-    const onListen = (text) => {
-        if (text.length > 0) {
-            setIsPlaying(true);
-            const options = {
-                method: 'POST',
-                headers: {
-                    'xi-api-key': XI_API_KEY,
-                    'Content-Type': 'application/json'
-                },
-                body: `{"text":"${text}","voice_settings":{"stability":0.5,"similarity_boost":0.5}}`,
-            };
-
-            fetch(`${XI_API_URL}/${VOICE_ID}`, options, { parseType: 'arrayBuffer' })
-                .then(response => {
-                    response && response.blob().then((audioBlob) => {
-                        // Convert the binary data to a blob
-                        const audioUrl = URL.createObjectURL(audioBlob);
-
-                        // Create an audio element and set its source to the audio URL
-                        const audio = new Audio(audioUrl);
-                        audio.play(); // Play the audio
-
-                        audio.addEventListener('loadedmetadata', () => {
-                            // do stuff with the duration
-                            const duration = (audio.duration * 1000) + 200;
-                            setTimeout(() => {
-                                setIsPlaying(false);
-                            }, duration);
-                        });
-                    })
-                })
-                .catch(error => console.error(error));
-        }
-    }
     return <>
         <div className={`${styles.card} ${isTranslated ? styles.cardAlt : ''}`}>
-            <CardHeader selectedLang={selectedLang} selectLanguage={selectLanguage} switchTranslation={switchTranslation} isTranslated={isTranslated} />
+            <CardHeader language={language} selectLanguage={selectLanguage} switchTranslation={switchTranslation} isTranslated={isTranslated} />
             <CardBody text={text} setText={setText} />
-            <CardFooter translate={translate} onCopy={onCopy} onListen={onListen} isPlaying={isPlaying} isTranslated={isTranslated} />
+            <CardFooter text={text} onCopy={onCopy} onTranslateButtonClick={onTranslateButtonClick} isTranslated={isTranslated} />
         </div >
     </>
 }

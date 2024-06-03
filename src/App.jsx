@@ -6,7 +6,7 @@ import Card from './components/Card/Card'
 import { LANGUAGES } from './constants';
 import { useState, useEffect } from 'react'
 import { useDebounce } from 'use-debounce';
-import { API_URL, XI_API_URL, XI_API_KEY, VOICE_ID } from "./config";
+import { API_URL } from "./config";
 
 const TOAST_CONFIG = {
   hideProgressBar: true,
@@ -18,29 +18,38 @@ const TOAST_CONFIG = {
 }
 
 function App() {
+  // Hello, how are you?
   const [text, setText] = useState("");
   const [textValue] = useDebounce(text, 400);
   const [translatedText, setTranslatedText] = useState("");
 
-  const [sourceLanguage, setSourceLanguage] = useState("en");
-  const [selectedLang, setSelectedLang] = useState("");
+  const [sourceLanguage, setSourceLanguage] = useState(LANGUAGES.ENGLISH);
 
-  const selectLanguage = (sourceLang, isTranslatedCard) => {
-    if (!isTranslatedCard) {
+  const selectSourceLanguage = (sourceLang, isTranslated) => {
+    if (!isTranslated) {
       setSourceLanguage(sourceLang);
-      setSelectedLang(sourceLang);
       onTranslate(sourceLang, targetLanguage);
     } else {
-      selectLanguageTo(sourceLang);
+      selectTargetLanguage(sourceLang);
     }
   }
 
-  const [targetLanguage, setTargetLanguage] = useState("fr");
-  const selectLanguageTo = (targetLang) => {
+  const [targetLanguage, setTargetLanguage] = useState(LANGUAGES.FRENCH);
+  const selectTargetLanguage = (targetLang) => {
     setTargetLanguage(targetLang);
-    setSelectedLang(targetLang);
     onTranslate(sourceLanguage, targetLang);
   }
+
+  const switchTranslation = () => {
+    setText(translatedText);
+    setSourceLanguage(targetLanguage);
+    setTargetLanguage(sourceLanguage);
+  }
+
+  const onTranslateButtonClick = () => {
+    onTranslate(sourceLanguage, targetLanguage);
+  }
+
 
   useEffect(() => {
     if (textValue.length > 0) {
@@ -51,8 +60,8 @@ function App() {
   }, [textValue])
 
   const onTranslate = (sourceLang, targetLang) => {
-    if (translateValue.length > 0) {
-      fetch(`${API_URL}/get?q=${translateValue}&langpair=${sourceLang}|${targetLang}`)
+    if (textValue.length > 0) {
+      fetch(`${API_URL}/get?q=${textValue}&langpair=${sourceLang}|${targetLang}`)
         .then(response => response.json())
         .then(data => {
           switch (data.responseStatus) {
@@ -88,8 +97,8 @@ function App() {
           <Logo />
           <div className={styles.appContainer}>
             <div className="row">
-              <Card text={text} language={sourceLanguage} selectLanguage={selectLanguage} />
-              <Card text={translatedText} language={targetLanguage} selectLanguage={selectLanguage} isTranslated={true} />
+              <Card text={text} setText={setText} language={sourceLanguage} selectLanguage={selectSourceLanguage} onTranslateButtonClick={onTranslateButtonClick} />
+              <Card text={translatedText} setText={setTranslatedText} language={targetLanguage} selectLanguage={selectTargetLanguage} switchTranslation={switchTranslation} isTranslated={true} />
             </div>
           </div>
         </div>

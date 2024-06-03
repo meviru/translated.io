@@ -28,34 +28,6 @@
     grid-template-columns: auto auto;
 }
 
-.iconBtn {
-    width: 36px;
-    height: 36px;
-    outline: none;
-    display: flex;
-    cursor: pointer;
-    align-items: center;
-    border-radius: 12px;
-    justify-content: center;
-    border: 2px solid #4D5562;
-    background-color: transparent;
-    transition: 0.35s ease;
-}
-
-.iconBtn img {
-    transition: 0.35s ease;
-}
-
-.iconBtn:hover,
-.iconBtn.iconBtnAnimation {
-    border-color: rgba(255, 255, 255, 0.8);
-}
-
-.iconBtn:hover img,
-.iconBtn.iconBtnAnimation {
-    filter: brightness(0) invert(0.8);
-}
-
 .translateBtn {
     cursor: pointer;
     outline: none;
