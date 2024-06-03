@@ -4,7 +4,7 @@ import iconCopy from "../../assets/Copy.svg"
 import iconTranslate from "../../assets/Sort_alfa.svg"
 import styles from "./CardFooter.module.css";
 
-const CardFooter = ({ isPlaying, isTranslatedCard, translate, onListen, onCopy, onTranslateBtn }) => {
+const CardFooter = ({ isPlaying, isTranslated, translate, onListen, onCopy, onTranslateBtn }) => {
     const count = useRef(0);
 
     useEffect(() => {
@@ -13,7 +13,7 @@ const CardFooter = ({ isPlaying, isTranslatedCard, translate, onListen, onCopy, 
 
     return <>
         <div className={styles.cardFooter}>
-            {!isTranslatedCard && <div className={styles.footerCount}>{count.current}/500</div>}
+            {!isTranslated && <div className={styles.footerCount}>{count.current}/500</div>}
             <div className={styles.footerButtons}>
                 <div className={styles.footerButtonsLeft}>
                     <button type='button' className={`${styles.iconBtn} ${isPlaying ? styles.iconBtnAnimation : ''}`}>
@@ -23,7 +23,7 @@ const CardFooter = ({ isPlaying, isTranslatedCard, translate, onListen, onCopy, 
                         <img src={iconCopy} alt='copy' title='Copy text' />
                     </button>
                 </div>
-                {!isTranslatedCard && <button onClick={onTranslateBtn} type='button' className={styles.translateBtn}>
+                {!isTranslated && <button onClick={onTranslateBtn} type='button' className={styles.translateBtn}>
                     <img className={styles.translateBtnIcon} src={iconTranslate} alt='copy' title='Copy text' />
                     Translate
                 </button>}

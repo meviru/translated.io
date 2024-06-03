@@ -15,38 +15,17 @@ const TOAST_CONFIG = {
     theme: "colored",
 }
 
-const Card = ({ isTranslatedCard }) => {
+const Card = ({ text, setText, isTranslated, selectedLang, selectLanguage }) => {
     // Hello, how are you?
     const [translate, setTranslate] = useState("");
     const [translateValue] = useDebounce(translate, 400);
     const [translated, setTranslated] = useState("");
-
-    const [selectedLang, setSelectedLang] = useState("");
-
-    const [language, setLanguage] = useState("en");
-    const selectLanguage = (lang, isTranslatedCard) => {
-        if (!isTranslatedCard) {
-            setLanguage(lang);
-            setSelectedLang(lang);
-            onTranslate(lang, languageTo);
-        } else {
-            selectLanguageTo(lang);
-        }
-    }
-
-    const [languageTo, setLanguageTo] = useState("fr");
-    const selectLanguageTo = (langTo) => {
-        setLanguageTo(langTo);
-        setSelectedLang(langTo);
-        onTranslate(language, langTo);
-    }
 
     const switchTranslation = () => {
         setTranslate(translated);
         setLanguage(languageTo);
         setLanguageTo(language);
     }
-
 
     useEffect(() => {
         if (translateValue.length > 0) {
@@ -133,10 +112,10 @@ const Card = ({ isTranslatedCard }) => {
         }
     }
     return <>
-        <div className={`${styles.card} ${isTranslatedCard ? styles.cardAlt : ''}`}>
-            <CardHeader selectedLang={selectedLang} selectLanguage={selectLanguage} switchTranslation={switchTranslation} isTranslatedCard={isTranslatedCard} />
-            <CardBody translate={translate} setTranslate={setTranslate} />
-            <CardFooter translate={translate} onCopy={onCopy} onListen={onListen} isPlaying={isPlaying} isTranslatedCard={isTranslatedCard} />
+        <div className={`${styles.card} ${isTranslated ? styles.cardAlt : ''}`}>
+            <CardHeader selectedLang={selectedLang} selectLanguage={selectLanguage} switchTranslation={switchTranslation} isTranslated={isTranslated} />
+            <CardBody text={text} setText={setText} />
+            <CardFooter translate={translate} onCopy={onCopy} onListen={onListen} isPlaying={isPlaying} isTranslated={isTranslated} />
         </div >
     </>
 }
