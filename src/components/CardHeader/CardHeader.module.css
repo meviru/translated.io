@@ -19,11 +19,17 @@
     padding: 8px 12px;
     color: #6B727E;
     cursor: pointer;
-    font-weight: 600;
     font-size: 14px;
+    font-weight: 600;
     display: inline-flex;
     align-items: center;
     border-radius: 10px;
+    letter-spacing: -0.5px;
+    margin-right: 12px;
+}
+
+.langSwitchItem:last-child {
+    margin-right: 0;
 }
 
 .langSwitchItem.active {

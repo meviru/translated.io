@@ -8,6 +8,12 @@
     display: inline-flex;
     align-items: center;
     border-radius: 10px;
+    letter-spacing: -0.5px;
+    margin-right: 12px;
+}
+
+.langSwitchItem:last-child {
+    margin-right: 0;
 }
 
 .selectLang::after {
@@ -17,10 +23,6 @@
     display: block;
     margin-left: 3px;
     background: url("../../assets/Expand_down.svg") no-repeat center center/contain;
-}
-
-.langSwitchItem {
-    margin-left: 12px;
 }
 
 .langSwitchItem.active {
