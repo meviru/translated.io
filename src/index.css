@@ -27,23 +27,6 @@ select {
     font-size: inherit;
 }
 
-
-::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-}
-
-::-webkit-scrollbar-track {
-    border-radius: 5px;
-    background-color: #394150;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #4D5562;
-    border-radius: 5px;
-}
-
 .container {
     width: 100%;
     margin: 0 auto;
@@ -52,9 +35,9 @@ select {
 }
 
 .row {
-    display: flex;
+    display: grid;
     gap: 15px;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
 .Toastify__toast-container {
@@ -71,5 +54,11 @@ select {
 @media (min-width: 768px) {
     .container {
         padding: 0 72px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
