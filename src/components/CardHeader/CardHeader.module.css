@@ -1,5 +1,6 @@
 .cardHeader {
     display: flex;
+    overflow-x: auto;
     align-items: center;
     padding-bottom: 16px;
     justify-content: space-between;
@@ -9,6 +10,7 @@
 .langSwitch {
     display: flex;
     list-style: none;
+    white-space: nowrap;
     align-items: center;
 }
 
