@@ -1,22 +1,39 @@
-import iconSwitch from "../../assets/Horizontal_top_left_main.svg"
-import { LANGUAGES } from "../../constants";
+import { useEffect, useState } from "react";
+import { LANGUAGES, generateUniqueId } from "../../constants";
+import SwitchButton from "../SwitchButton/SwitchButton";
 import styles from "./CardHeader.module.css";
+import LanguageItem from "../LanguageItem/LanguageItem";
 
 const CardHeader = ({ isTranslated, language, selectLanguage, switchTranslation }) => {
+    const defaultLanguages = [];
+
+    const [languageList, setLanguageList] = useState([]);
+
+    useEffect(() => {
+        for (const key in LANGUAGES) {
+            if (LANGUAGES.hasOwnProperty(key)) {
+                const languageObj = {}
+                languageObj.id = generateUniqueId('lid');
+                languageObj.name = key.charAt(0) + key.substring(1, key.length).toLowerCase();
+                languageObj.code = LANGUAGES[key];
+                defaultLanguages.push(languageObj);
+            }
+        }
+        setLanguageList(defaultLanguages);
+    }, [])
+
     return <>
         <div className={styles.cardHeader}>
             <ul className={styles.langSwitch}>
-                {!isTranslated && <li onClick={() => selectLanguage('autodetect')} className={`${styles.langSwitchItem} ${language === LANGUAGES.AUTO ? styles.active : ''}`}>Detect Language</li>}
-                <li onClick={() => selectLanguage(LANGUAGES.ENGLISH, isTranslated)} className={`${styles.langSwitchItem} ${language === LANGUAGES.ENGLISH ? styles.active : ''}`}>English</li>
-                <li onClick={() => selectLanguage(LANGUAGES.FRENCH, isTranslated)} className={`${styles.langSwitchItem} ${language === LANGUAGES.FRENCH ? styles.active : ''}`}>French</li>
-                <li onClick={() => selectLanguage(LANGUAGES.SPANISH, isTranslated)} className={`${styles.selectLang} ${styles.langSwitchItem} ${language === LANGUAGES.SPANISH ? styles.active : ''}`}>Spanish</li>
+                {!isTranslated &&
+                    <li onClick={() => selectLanguage('autodetect')} className={`${styles.langSwitchItem} ${language === 'autodetect' ? styles.active : ''}`}>Detect Language</li>
+                }
+                {languageList.length > 0 && languageList.slice(0, 3).map((langItem, index) =>
+                    <LanguageItem key={index} isLastItem={index == 2} langItem={langItem} language={language} isTranslated={isTranslated} selectLanguage={selectLanguage} />
+                )}
             </ul>
             {isTranslated &&
-                <div className={styles.cardHeaderRight}>
-                    <button type='button' className={styles.iconBtn} onClick={switchTranslation}>
-                        <img src={iconSwitch} alt='switch' title='Switch translation' />
-                    </button>
-                </div>
+                <SwitchButton switchTranslation={switchTranslation} />
             }
         </div>
     </>

@@ -3,23 +3,15 @@ import Hero from './components/Hero/Hero'
 import Logo from './components/Logo/Logo'
 import { ToastContainer, toast } from 'react-toastify'
 import Card from './components/Card/Card'
-import { LANGUAGES } from './constants';
+import { LANGUAGES, TOAST_CONFIG } from './constants';
 import { useState, useEffect } from 'react'
 import { useDebounce } from 'use-debounce';
 import { API_URL } from "./config";
 
-const TOAST_CONFIG = {
-  hideProgressBar: true,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: false,
-  progress: undefined,
-  theme: "colored",
-}
+
 
 function App() {
-  // Hello, how are you?
-  const [text, setText] = useState("");
+  const [text, setText] = useState("Hello, how are you?");
   const [textValue] = useDebounce(text, 400);
   const [translatedText, setTranslatedText] = useState("");
 

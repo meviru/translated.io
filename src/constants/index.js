@@ -1,5 +1,4 @@
 export const LANGUAGES = {
-    AUTO: 'autodetect',
     ENGLISH: 'en',
     FRENCH: 'fr',
     SPANISH: 'es',
@@ -9,4 +8,17 @@ export const LANGUAGES = {
     GERMAN: "de-DE",
     ARABIC: "ar-AE",
     CZECH: "cs",
+}
+
+export const TOAST_CONFIG = {
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: false,
+    progress: undefined,
+    theme: "colored",
+}
+
+export const generateUniqueId = (prefix) => {
+    return Math.random().toString(36).replace('0.', prefix + '-')
 }

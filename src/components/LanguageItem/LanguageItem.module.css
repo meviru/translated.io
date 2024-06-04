@@ -1,27 +1,26 @@
-.cardHeader {
-    display: flex;
-    align-items: center;
-    padding-bottom: 16px;
-    justify-content: space-between;
-    border-bottom: 1px solid #4D5562;
-}
-
-.langSwitch {
-    display: flex;
-    list-style: none;
-    align-items: center;
-}
-
 .langSwitchItem {
     position: relative;
     padding: 8px 12px;
     color: #6B727E;
     cursor: pointer;
-    font-weight: 600;
     font-size: 14px;
+    font-weight: 600;
     display: inline-flex;
     align-items: center;
     border-radius: 10px;
+}
+
+.selectLang::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    display: block;
+    margin-left: 3px;
+    background: url("../../assets/Expand_down.svg") no-repeat center center/contain;
+}
+
+.langSwitchItem {
+    margin-left: 12px;
 }
 
 .langSwitchItem.active {
