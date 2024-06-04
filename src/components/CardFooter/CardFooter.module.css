@@ -6,7 +6,7 @@
 .footerCount {
     position: absolute;
     z-index: 2;
-    top: 0;
+    top: 4px;
     right: 0;
     font-size: 12px;
     font-weight: 600;
@@ -16,7 +16,7 @@
 
 .footerButtons {
     display: flex;
-    min-height: 60px;
+    min-height: 66px;
     padding-top: 12px;
     align-items: flex-end;
     justify-content: space-between;
@@ -34,7 +34,7 @@
     color: #fff;
     display: flex;
     font-weight: 500;
-    padding: 11px 24px;
+    padding: 12px 24px;
     border-radius: 12px;
     align-items: center;
     border: 1px solid #7CA9F3;
